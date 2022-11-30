@@ -1,15 +1,16 @@
-FROM curlimages/curl:7.86.0 as curl
+FROM debian:stable-slim
 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-
-FROM bitnami/kubectl:1.24.8
-
-COPY --from=curl /home/curluser/awscliv2.zip /awscliv2.zip
-
-RUN unzip awscliv2.zip \
-    && ./aws/install
+RUN apt-get update && apt install -y ca-certificates curl gpg unzip \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list \
+    && apt-get update \
+    && apt-get install -y kubectl \
+    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" --keepalive-time 2 \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY ./run-backup.sh /run-backup.sh
 
 CMD ["bash", "-c", "./run-backup.sh"]
-
