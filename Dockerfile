@@ -1,6 +1,6 @@
 FROM debian:stable-slim
 
-RUN apt-get update && apt install -y ca-certificates curl gpg unzip \
+RUN apt-get update && apt install -y ca-certificates curl dirmngr gpg unzip \
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list \
@@ -11,6 +11,14 @@ RUN apt-get update && apt install -y ca-certificates curl gpg unzip \
     && ./aws/install \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ./run-backup.sh /run-backup.sh
+RUN groupadd --gid 10001 hdc \ 
+    && useradd --uid 10001 hdc \
+        --gid 10001 --create-home --home-dir /home/hdc
+
+USER hdc
+
+WORKDIR /home/hdc
+
+COPY ./run-backup.sh run-backup.sh
 
 CMD ["bash", "-c", "./run-backup.sh"]
