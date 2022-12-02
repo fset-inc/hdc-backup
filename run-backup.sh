@@ -34,6 +34,9 @@ kubectl exec -it -n $CLINIC_SLUG db-0 -- bash -c "mysqldump -uroot -p${MYSQL_PAS
 
 kubectl cp -n $CLINIC_SLUG db-0:/code/$fullFilename /$fullFilename
 
+echo "Importing gpg key"
+gpg --import hdcprod.pgp
+
 # encrypt
 # always trust the key, it's verified manually.
 gpg --output $fullFilename.gpg --encrypt --trust-model always --recipient pki-prod@hdcbc.ca $fullFilename
