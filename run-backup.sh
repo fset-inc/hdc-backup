@@ -4,7 +4,7 @@ filename=$CLINIC_SLUG.$(date +%Y%m%d-%H%M%S)
 fullFilename="hdc-${filename}.sql"
 folder=$(date +%Y%m)
 
-kubectl exec -it -n $CLINIC_SLUG db-0 -- bash -c "mysqldump -uroot -p${MYSQL_PASSWORD} oscar \
+kubectl exec -n $CLINIC_SLUG db-0 -c mariadb -- bash -c "mysqldump -uroot -p${MYSQL_PASSWORD} oscar \
     allergies \
     appointment \
     appointmentType \
