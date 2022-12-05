@@ -1,24 +1,9 @@
-FROM debian:stable-slim
+FROM ghcr.io/kanisterio/mysql-sidecar:0.84.0
 
-RUN apt-get update && apt install -y ca-certificates curl dirmngr gpg unzip \
-    && mkdir -p /etc/apt/keyrings \
-    && curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list \
-    && apt-get update \
-    && apt-get install -y kubectl \
+COPY ./kubernetes.repo /etc/yum.repos.d/kubernetes.repo
+
+RUN microdnf update && microdnf install -y ca-certificates curl dirmngr gpg unzip yum \
     && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" --keepalive-time 2 \
     && unzip awscliv2.zip \
     && ./aws/install \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN groupadd --gid 10001 hdc \ 
-    && useradd --uid 10001 hdc \
-        --gid 10001 --create-home --home-dir /home/hdc
-
-USER hdc
-
-WORKDIR /home/hdc
-
-COPY ./run-backup.sh run-backup.sh
-
-CMD ["bash", "-c", "./run-backup.sh"]
+    && yum install -y kubectl
