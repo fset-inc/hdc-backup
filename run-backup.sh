@@ -32,7 +32,7 @@ kubectl exec -n $CLINIC_SLUG db-0 -c mariadb -- bash -c "mysqldump -uroot -p${MY
     preventionsExt \
     provider > ${fullFilename}"
 
-kubectl cp -n $CLINIC_SLUG db-0:/code/$fullFilename /home/hdc/$fullFilename
+kubectl cp -n $CLINIC_SLUG db-0:/code/$fullFilename /$fullFilename
 
 echo "Importing gpg key"
 gpg --import hdcprod.pgp
