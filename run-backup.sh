@@ -37,7 +37,7 @@ kubectl exec -n $CLINIC_SLUG db-0 -c mariadb -- bash -c "mysqldump -uroot -p${MY
     preventionsExt \
     provider > ${fullFilename}"
 
-kubectl cp -n $CLINIC_SLUG db-0:/code/$fullFilename /$fullFilename
+kubectl cp -n $CLINIC_SLUG db-0:/code/$fullFilename /home/hdc/$fullFilename
 
 # encrypt
 # always trust the key, it's verified manually.
