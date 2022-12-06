@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Synchronize time to make sure the AWS signature is valid
+ntpd -gq
+service ntp start
+
 filename=$CLINIC_SLUG.$(date +%Y%m%d-%H%M%S)
 fullFilename="hdc-${filename}.sql"
 folder=$(date +%Y%m)
