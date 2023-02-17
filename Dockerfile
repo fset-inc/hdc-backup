@@ -1,5 +1,7 @@
 FROM debian:stable-slim
 
+LABEL org.opencontainers.image.source=https://github.com/fset-inc/hdc-backup
+
 RUN apt-get update && apt install -y ca-certificates curl dirmngr gpg ntp unzip \
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg \
